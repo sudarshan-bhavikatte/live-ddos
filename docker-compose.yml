@@ -1,0 +1,31 @@
+services:
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - FRONTEND_URL=http://localhost:8888
+      - IPINFO_API_KEY=${IPINFO_API_KEY}
+      - ABUSEIPDB_API_KEY=${ABUSEIPDB_API_KEY}
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      args:
+        - NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+    ports:
+      - "8888:3000"
+    environment:
+      - NEXT_PUBLIC_SERVER_URL=http://localhost:8000
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
